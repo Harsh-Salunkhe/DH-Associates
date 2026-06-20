@@ -72,7 +72,7 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
 
 router.get("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const employee = await prisma.employeeProfile.findUnique({
       where: { id },
@@ -96,7 +96,7 @@ router.get("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => 
 
 router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { phone, designation, department } = req.body;
 
     const existing = await prisma.employeeProfile.findUnique({ where: { id } });
@@ -123,7 +123,7 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
 
 router.patch("/:id/deactivate", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const existing = await prisma.employeeProfile.findUnique({ where: { id } });
     if (!existing) {
