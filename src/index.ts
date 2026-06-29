@@ -3,6 +3,7 @@ import express from "express";
 import prisma from "./lib/prisma";
 import authRoutes from "./routes/auth";
 import { authenticate, requireAdmin, AuthRequest } from "./middleware/auth";
+import serviceRequestRoutes from "./routes/serviceRequest";
 import employeeRoutes from "./routes/employee";
 const app = express();
 const PORT = 4000;
@@ -10,6 +11,7 @@ const PORT = 4000;
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/service-requests", serviceRequestRoutes);
 app.get("/", (req, res) => {
   res.json({ message: "DH Associates API is running" });
 });

@@ -15,6 +15,7 @@ datasource db {
 enum Role {
   ADMIN
   EMPLOYEE
+  CLIENT
 }
 
 model User {
@@ -25,7 +26,7 @@ model User {
   role         Role     @default(EMPLOYEE)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
+  serviceRequests ServiceRequest[]
   employeeProfile EmployeeProfile?
 }
 
@@ -59,4 +60,38 @@ model Client {
   updatedAt DateTime @updatedAt
 
   employees EmployeeProfile[]
+}
+
+enum RequestStatus {
+  PENDING            // created, awaiting documents
+  DOCUMENTS_RECEIVED // client uploaded, awaiting our processing
+  IN_PROGRESS        // we're working on it
+  COMPLETED          // done, acknowledgement issued
+}
+
+model ServiceRequest {
+  id          String        @id @default(cuid())
+  clientId    String
+  client      User          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  actName     String?       // e.g. "ESI Registration" — optional for now
+  title       String        // short label for the request
+  notes       String?       // client's description of what they need
+  status      RequestStatus @default(PENDING)
+
+  documents   Document[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Document {
+  id               String         @id @default(cuid())
+  serviceRequestId String
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+
+  fileName    String   // original name, e.g. "pan_card.pdf"
+  filePath    String   // where it's stored on the server
+  fileSize    Int      // bytes
+  uploadedAt  DateTime @default(now())
 }
