@@ -80,6 +80,7 @@ model ServiceRequest {
   status      RequestStatus @default(PENDING)
 
   documents   Document[]
+  acknowledgement  Acknowledgement?
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -94,4 +95,15 @@ model Document {
   filePath    String   // where it's stored on the server
   fileSize    Int      // bytes
   uploadedAt  DateTime @default(now())
+}
+
+model Acknowledgement {
+  id               String         @id @default(cuid())
+  serviceRequestId String         @unique
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+
+  fileName         String         // original name of the uploaded PDF
+  filePath         String         // where it's stored on disk
+  referenceNo      String?        // optional reference number
+  issuedAt         DateTime       @default(now())
 }

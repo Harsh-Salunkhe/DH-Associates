@@ -32,3 +32,10 @@ export function requireAdmin(req: AuthRequest, res: Response, next: NextFunction
   }
   next();
 }
+
+export function requireStaff(req: AuthRequest, res: Response, next: NextFunction) {
+  if (req.user?.role !== "ADMIN" && req.user?.role !== "EMPLOYEE") {
+    return res.status(403).json({ error: "Staff access required" });
+  }
+  next();
+}
